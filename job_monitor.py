@@ -1,57 +1,37 @@
-import sys
+import requests
 import traceback
 
-print("====================================")
-print("Sarkari Job Monitor - TEST")
-print("====================================")
+urls = [
+    "https://www.sarkariexam.com/mobile/",
+    "https://www.sarkariexam.com/category/hot-job/",
+]
 
-try:
-    import requests
-    from bs4 import BeautifulSoup
+headers = {
+    "User-Agent": "Mozilla/5.0"
+}
 
-    print("✅ Python OK")
-    print("✅ requests OK")
-    print("✅ BeautifulSoup OK")
+for url in urls:
+    print("\n================================")
+    print("TEST:", url)
+    print("================================")
 
-   url = "https://www.sarkariexam.com/mobile/"
-    print("🌐 Website checking...")
-    print(url)
+    try:
+        r = requests.get(
+            url,
+            headers=headers,
+            timeout=30,
+            allow_redirects=True
+        )
 
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
+        print("STATUS:", r.status_code)
+        print("FINAL URL:", r.url)
+        print("PAGE SIZE:", len(r.text))
 
-    response = requests.get(
-        url,
-        headers=headers,
-        timeout=30
-    )
+        if r.status_code == 200:
+            print("✅ ACCESS OK")
+        else:
+            print("❌ ACCESS BLOCKED")
 
-    print("HTTP Status:", response.status_code)
-    print("Page size:", len(response.text))
-
-    response.raise_for_status()
-
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    links = soup.find_all("a", href=True)
-
-    print("Links found:", len(links))
-
-    print("====================================")
-    print("TEST SUCCESSFUL")
-    print("====================================")
-
-except Exception as e:
-    print("====================================")
-    print("❌ ACTUAL ERROR")
-    print("====================================")
-
-    print("Error type:", type(e).__name__)
-    print("Error:", str(e))
-
-    print("")
-    print("FULL TRACEBACK:")
-    traceback.print_exc()
-
-    sys.exit(1)
+    except Exception:
+        print("❌ REQUEST ERROR")
+        traceback.print_exc()
