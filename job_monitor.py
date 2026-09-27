@@ -1,9 +1,16 @@
 import requests
-import traceback
+
+BASE = "https://www.sarkariexam.com"
 
 urls = [
-    "https://www.sarkariexam.com/mobile/",
-    "https://www.sarkariexam.com/category/hot-job/",
+    BASE + "/feed/",
+    BASE + "/feed/rss/",
+    BASE + "/rss/",
+    BASE + "/wp-json/",
+    BASE + "/wp-json/wp/v2/posts",
+    BASE + "/wp-json/wp/v2/categories",
+    BASE + "/sitemap.xml",
+    BASE + "/post-sitemap.xml",
 ]
 
 headers = {
@@ -11,9 +18,9 @@ headers = {
 }
 
 for url in urls:
-    print("\n================================")
+    print("\n======================================")
     print("TEST:", url)
-    print("================================")
+    print("======================================")
 
     try:
         r = requests.get(
@@ -25,13 +32,22 @@ for url in urls:
 
         print("STATUS:", r.status_code)
         print("FINAL URL:", r.url)
-        print("PAGE SIZE:", len(r.text))
+        print("CONTENT TYPE:", r.headers.get("content-type"))
+        print("PAGE SIZE:", len(r.content))
 
         if r.status_code == 200:
             print("✅ ACCESS OK")
-        else:
-            print("❌ ACCESS BLOCKED")
+            print("PREVIEW:")
+            print(r.text[:300].replace("\n", " "))
 
-    except Exception:
-        print("❌ REQUEST ERROR")
-        traceback.print_exc()
+        elif r.status_code == 403:
+            print("❌ BLOCKED (403)")
+
+        elif r.status_code == 404:
+            print("❌ NOT FOUND (404)")
+
+        else:
+            print("⚠️ OTHER STATUS")
+
+    except Exception as e:
+        print("❌ ERROR:", type(e).__name__, str(e))
