@@ -29,6 +29,12 @@ jobs:
         run: |
           python job_monitor.py
 
+      - name: Create seen_jobs.json if missing
+        run: |
+          if [ ! -f seen_jobs.json ]; then
+            echo "[]" > seen_jobs.json
+          fi
+
       - name: Save detected jobs
         run: |
           git config user.name "Sarkari Job Bot"
