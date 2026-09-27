@@ -13,8 +13,7 @@ try:
     print("✅ requests OK")
     print("✅ BeautifulSoup OK")
 
-    url = "https://www.sarkariexam.com/category/hot-job/"
-
+   url = "https://www.sarkariexam.com/mobile/"
     print("🌐 Website checking...")
     print(url)
 
